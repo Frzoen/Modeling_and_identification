@@ -2,8 +2,12 @@
 
 close all; % cleaning
 clear all;
+samples_try = 100;
 
-number_of_samples = 5000; % fixed numer of samples
+samples = linspace(100,100*samples_try,samples_try);
+error = zeros(1,samples_try);
+
+for number_of_samples = samples
 
 seed = 0.712;  % initial seed for random number generator
 seed2 = 0.813; % initial seed for random number generator
@@ -26,30 +30,34 @@ count = 0;
 % generate linear space of ponints for plot
 x = linspace(-1,1,number_of_samples);
 
+% calculate true area of circle
+circle_area = pi * (0.5)^2;
+
 % random number generating loop
 for i = 2:1:number_of_samples
-    random_number_x = sawtooth(15*random_number_x*pi)/2+0.5;
+    random_number_x = (sawtooth(20*random_number_x*pi)+1)/2;
     random_number_sequence_x(i) = random_number_x;
-    random_number_y = sawtooth(15*random_number_y*pi)/2+0.5;
+    random_number_y = (sawtooth(20*random_number_y*pi)+1)/2;
     random_number_sequence_y(i) = random_number_y;
-    if(sqrt(random_number_x^2+random_number_y^2) <= 0.5)
+    if(sqrt((random_number_x-0.5)^2+(random_number_y-0.5)^2) <= 0.5)
         count = count + 1;
     end
 end
 % generate figure for plots
-figure(1);
+%figure(1);
 % choose plot in figure
-subplot(2,1,1);
+%subplot(2,1,1);
 
-plot(random_number_sequence_y, random_number_sequence_x,'*')
+%plot(random_number_sequence_y, random_number_sequence_x,'.')
 
 % generating legend for plot
-title('Sawtooth function','fontsize',14);
-hold on;
-viscircles([0.5,0.5],0.5);
-count/number_of_samples
+%title('Sawtooth function','fontsize',14);
+%hold on;
+%viscircles([0.5,0.5],0.5);
+circle_area_saw = count/number_of_samples;
+error(number_of_samples/100) = circle_area_saw - circle_area;
 
-subplot(2,1,2);
+%subplot(2,1,2);
 
 x = linspace(0,1,number_of_samples);
 
@@ -59,14 +67,17 @@ for i=1:1:number_of_samples
 
 end
 
-plot(x,pdf_);
-title('CDF','fontsize',14);
-hold on;
+%hold on;
+%plot(x,pdf_);
+%plot(x,x);
+%legend('Experimental CDF','Designed CDF');
+%title('CDF','fontsize',14);
+%hold on;
 
 
 
 
-figure(2)
+%figure(2)
 random_number_sequence_x = zeros(1,number_of_samples);
 random_number_sequence_y = zeros(1,number_of_samples);
 random_number_x = seed;
@@ -80,18 +91,37 @@ x = linspace(-1,1,number_of_samples);
 data = sawtooth(x*15);
 
 for i = 2:1:number_of_samples
-    random_number_x = sin(15*random_number_x*pi);
+    random_number_x = (sin(20*random_number_x*pi)+1)/2;
     random_number_sequence_x(i) = random_number_x;
-    random_number_y = sin(15*random_number_y*pi);
+    random_number_y = (sin(20*random_number_y*pi)+1)/2;
     random_number_sequence_y(i) = random_number_y;
-    if(sqrt(random_number_x^2+random_number_y^2) <= 1)
+    if(sqrt((random_number_x-0.5)^2+(random_number_y-0.5)^2) <= 0.5)
         count = count + 1;
     end
 end
+%subplot(2,1,1);
+%plot(random_number_sequence_y, random_number_sequence_x,'.')
+%title('Sin function','fontsize',14);
+%viscircles([0.5,0.5],0.5);
+%circle_area_sin = count/number_of_samples
+%err = circle_area_sin - circle_area
 
-plot(random_number_sequence_y, random_number_sequence_x,'*')
-title('Sin function','fontsize',14);
-viscircles([0,0],1);
-count/number_of_samples
+
+%subplot(2,1,2);
+x = linspace(0,1,number_of_samples);
+for i=1:1:number_of_samples
+
+    pdf_(i) = sum(random_number_sequence_x < x(i))/number_of_samples;
+
+end
+%hold on;
+%plot(x,pdf_);
+%plot(x,x);
+%legend('Experimental CDF','Designed CDF');
+%title('CDF','fontsize',14);
+%hold on;
+end
+
+plot(samples,error.*error);
 
 %plot(x,data)
