@@ -6,6 +6,7 @@ number_of_samples = 10000;
 seed = 0.712;  % initial seed for random number generator
 seed2 = 0.817; % initial seed for random number generator
 
+% generate lambda series for system
 lambda = zeros(1,number_of_samples);
 lambda(1) = 0.5;
 lambda(2) = 0.5;
